@@ -399,10 +399,17 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             file = FileUtils.resolveFile(javaHome, "../Classes/classes.jar");
             toolsPaths.add(file);
         }
-        if (file == null || !file.exists()) {
-            file = FileUtils.resolveFile(javaHome, "../lib/tools.jar");
-            toolsPaths.add(file);
-        }
+        
+        String [] javaHomePaths = new String[] {"../lib/tools.jar", "lib/tools.jar"};
+		for (String javaHomeAppend : javaHomePaths) {
+			if (file != null && file.exists())
+				break;
+			file = FileUtils.resolveFile(javaHome, javaHomeAppend);
+			if (file == null || !file.exists())
+				continue;
+			toolsPaths.add(file);
+		}
+        
         
         if (!file.exists()) {
             throw new MojoExecutionException("Could not find tools.jar at " + toolsPaths + " under java.home: " + javaHome);
